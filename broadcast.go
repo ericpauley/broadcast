@@ -19,13 +19,10 @@ type Broadcast chan interface{}
 
 // Receive waits for a message to be received.
 // If more receivers are listening then Receive will forward the packet to them as well.
-func (b Broadcast) Receive() interface{} {
-	defer recover() // Don't panic on rebroadcasts
-	msg, ok := <-b
-	if !ok {
-		return nil
-	}
-	switch t := msg.(type) {
+func (b Broadcast) Receive() (msg interface{}) {
+	defer func() { recover() }() // Don't panic on rebroadcasts.
+	msg = <-b
+	switch t := msg.(type) { // If this is a message extract its value for sending and report receipt to sender.
 	case message:
 		defer close(t.done)
 		msg = t.contents
@@ -36,5 +33,5 @@ func (b Broadcast) Receive() interface{} {
 		<-done
 	default:
 	}
-	return msg
+	return
 }
