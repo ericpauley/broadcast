@@ -20,6 +20,7 @@ func BenchmarkNSubscribers1MessageBroadcast(bench *testing.B) {
 	}
 	time.Sleep(1 * time.Millisecond)
 	b <- 10
+	close(b)
 	s.Wait()
 }
 
@@ -37,6 +38,7 @@ func Benchmark1SubscriberNMessagesBroadcast(bench *testing.B) {
 	for i := 0; i < bench.N; i++ {
 		b <- 10
 	}
+	close(b)
 	s.Wait()
 }
 
