@@ -19,5 +19,6 @@ func ExampleBroadcast() {
 		}()
 	}
 	b <- 1
+	close(b)
 	s.Wait()
 }
